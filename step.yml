@@ -71,15 +71,36 @@ toolkit:
     package_name: github.com/Freebox-CI/bitrise-step-changelog-generator
 
 inputs:
+  - repo_dir: ""
+    opts:
+      title: Git repository local directory
+      is_required: true
+  - start_commit: ""
+    opts:
+      title: The oldest commit from where to start changelog generation
+      is_required: true
+  - end_commit: "HEAD"
+    opts:
+      title: The earliest commit to stop changelog generation
+      is_required: false
   - commit_list: ""
     opts:
       title: Commit list to parse
-      description: Give all the commit that should be displayed in the changelog
+      description: Give all the commit that should be displayed in the changelog (won't be used if Git inputs are properly set)
       is_required: true
   - type_prefix: feat(Features)|fix(Bug Fixes)|refactor(Refactors)|test(Test)
     opts:
       title: Types identifiers
-      description: Add your types identifiers used in your commits and also the human readable name that will be used in the generated changelog.You can add multiple types by separating theme with a `| .
+      summary: Set your types identifiers used in your commits and also the human readable placeholder display in changelog.
+      description: |
+        Set your types identifiers used in your commits and also the human readable placeholder display in changelog.
+        You can set multiples types by separating them with a `|`.
+
+        `type(title)`
+
+        * type: keyword used in your commit message
+        * title : text to use in changelog generation
+
       is_expand: false
       is_required: true
   - debug: "no"

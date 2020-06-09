@@ -1,13 +1,11 @@
 package main
 
 import (
-	"os"
 	"regexp"
 	"strings"
 )
 
 const (
-	CommitEnv       = "commit_list"
 	CommitSeparator = "\n\n"
 	ScopeRegex      = "([\\(].*[\\)][\\:])"
 	ScopeValueRegex = "[\\(](.*)[\\)][\\:]"
@@ -19,8 +17,8 @@ type Entry struct {
 	commitMap map[string][]string // Key is scope and value is list commits related
 }
 
-func extractCommitList() []string {
-	return strings.Split(os.Getenv(CommitEnv), CommitSeparator)
+func extractCommitListFromString(commits string) []string {
+	return strings.Split(commits, CommitSeparator)
 }
 
 func fillCommitInfo(commits []string, entries []Entry) {
