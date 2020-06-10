@@ -20,13 +20,14 @@ func main() {
 	isDebug := isDebug()
 
 	commitStrList := getCommitStringList()
+	fmt.Printf("Found %d commit candidates\n", len(commitStrList))
 	prefixStrList := extractTypeList()
 	entries := createEntries(prefixStrList)
 	fillCommitInfo(commitStrList, entries)
+	displayEntries(entries)
 	unicodeResult := getBasicResult(entries)
 
 	if isDebug {
-		displayEntries(entries)
 		fmt.Printf("%s", unicodeResult)
 	}
 
@@ -57,6 +58,10 @@ func getCommitStringList() []string {
 }
 
 func getCommitLogs(dir string, commitStart string, commitEnd string) string {
+	fmt.Printf("Git Directory: %s \n", dir)
+	fmt.Printf("Git Start Commit: %s \n", commitStart)
+	fmt.Printf("Git End Commit: %s \n", commitEnd)
+
 	// Check if inconsistent
 	if len(dir) > 0 && len(commitStart) == 0{
 		fmt.Printf("You must provide a commit from were to start changelog generation")
@@ -80,6 +85,11 @@ func getCommitLogs(dir string, commitStart string, commitEnd string) string {
 		fmt.Printf("Failed get logs for this repository")
 		os.Exit(1)
 	}
+
+	if isDebug() {
+		fmt.Printf("Git Executing command: %s\n", logCmd.GetCmd().Args)
+	}
+	fmt.Printf("\n")
 	return output
 }
 

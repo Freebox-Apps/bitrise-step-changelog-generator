@@ -6,8 +6,14 @@ import (
 )
 
 func displayEntries(entries []Entry) {
+	fmt.Printf("Displayable Commits by type :\n")
 	for j := 0; j < len(entries); j++ {
-		fmt.Printf("%s : %s\t", entries[j].id, entries[j].name)
+		entry := entries[j]
+		keys := make([]string, 0, len(entry.commitMap))
+		for k := range entry.commitMap {
+			keys = append(keys, k)
+		}
+		fmt.Printf("type : %s\t\ttitle: %s\t\tmessage count: %d\n", entry.id, entry.name, len(keys))
 	}
 	fmt.Printf("\n")
 }
@@ -41,6 +47,11 @@ func getBasicResult(entries []Entry) string {
 			result += "\n\n"
 		}
 	}
+
+	if len(result) == 0{
+		fmt.Printf("\n\n === No Changelog Generated === \n\n")
+	}
+
 	return result
 }
 

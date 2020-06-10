@@ -71,7 +71,7 @@ toolkit:
     package_name: github.com/Freebox-CI/bitrise-step-changelog-generator
 
 inputs:
-  - repo_dir: ""
+  - repo_dir: "."
     opts:
       title: Git repository local directory
       is_required: true
