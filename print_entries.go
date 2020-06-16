@@ -32,7 +32,7 @@ func getBasicResult(entries []Entry) string {
 			for j := 0; j < len(keys); j++ {
 				key := keys[j]
 				commitList := entry.commitMap[key]
-				result += "\t\t" + key
+				result += "\t\t" + key + ": "
 
 				if len(commitList) > 1 {
 					for msgIndex := 0; msgIndex < len(commitList); msgIndex++ {

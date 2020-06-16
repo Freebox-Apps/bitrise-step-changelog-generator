@@ -27,7 +27,7 @@ func fillCommitInfo(commits []string, entries []Entry) {
 		for j := 0; j < len(entries); j++ {
 			_type := entries[j].id
 			if strings.HasPrefix(message, _type) {
-				noTypeMessage := strings.Trim(message, _type)
+				noTypeMessage := strings.TrimLeft(message, _type)
 				scope := extractScope(noTypeMessage)
 				noScopeMessage := cleanScope(noTypeMessage)
 				createOrAppendCommit(entries[j].commitMap, scope, noScopeMessage)

@@ -79,7 +79,7 @@ func getCommitLogs(dir string, commitStart string, commitEnd string) string {
 	}
 
 	// get logs
-	logCmd := gitCmd.Log("%s%n%b", commitStart, commitEnd, "--no-merges", "--children")
+	logCmd := gitCmd.Log("%s%n", commitStart, commitEnd, "--no-merges", "--children")
 	var output, errLog = logCmd.RunAndReturnTrimmedOutput()
 	if errLog != nil {
 		fmt.Printf("Failed get logs for this repository")
