@@ -83,11 +83,6 @@ inputs:
     opts:
       title: The earliest commit to stop changelog generation
       is_required: false
-  - commit_list: ""
-    opts:
-      title: Commit list to parse
-      description: Give all the commit that should be displayed in the changelog (won't be used if Git inputs are properly set)
-      is_required: true
   - type_prefix: feat(Features)|fix(Bug Fixes)|refactor(Refactors)|test(Test)
     opts:
       title: Types identifiers
@@ -100,6 +95,17 @@ inputs:
 
         * type: keyword used in your commit message
         * title : text to use in changelog generation
+
+      is_expand: false
+      is_required: true
+  - ticket_url:
+    opts:
+      title: Ticket url start 
+      summary: Set your ticket tracking url.
+      description: |
+        Set your ticket tracking url.
+
+        `https://myFavoritTicketManager.com/whatever?id=`
 
       is_expand: false
       is_required: true

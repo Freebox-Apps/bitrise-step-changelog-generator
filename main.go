@@ -2,16 +2,16 @@ package main
 
 import (
 	"fmt"
-	"github.com/Freebox-CI/bitrise-step-changelog-generator/git"
 	"os"
 	"os/exec"
+
+	"github.com/Freebox-CI/bitrise-step-changelog-generator/git"
 )
 
 const (
 	RepoDirectoryEnv = "repo_dir"
 	CommitStartEnv   = "start_commit"
 	CommitEndEnv     = "end_commit"
-	CommitEnv        = "commit_list"
 	DebugEnv         = "debug"
 	DebugKeyOk       = "yes"
 )
@@ -43,10 +43,6 @@ func main() {
 func getCommitStringList() []string {
 	// get commits raw text from repo
 	paramLogCommits := getCommitLogs(os.Getenv(RepoDirectoryEnv), os.Getenv(CommitStartEnv), os.Getenv(CommitEndEnv))
-	if len(paramLogCommits) == 0 {
-		// get commits raw text from step param
-		paramLogCommits = os.Getenv(CommitEnv)
-	}
 
 	// convert to an array of strings
 	commitStrList := extractCommitListFromString(paramLogCommits)
@@ -63,10 +59,10 @@ func getCommitLogs(dir string, commitStart string, commitEnd string) string {
 	fmt.Printf("Git End Commit: %s \n", commitEnd)
 
 	// Check if inconsistent
-	if len(dir) > 0 && len(commitStart) == 0{
+	if len(dir) > 0 && len(commitStart) == 0 {
 		fmt.Printf("You must provide a commit from were to start changelog generation")
 		os.Exit(1)
-	}else if len(dir) ==0{
+	} else if len(dir) == 0 {
 		return ""
 	}
 
@@ -79,7 +75,7 @@ func getCommitLogs(dir string, commitStart string, commitEnd string) string {
 	}
 
 	// get logs
-	logCmd := gitCmd.Log("%s%n", commitStart, commitEnd, "--no-merges", "--children")
+	logCmd := gitCmd.Log("%s%n%b", commitStart, commitEnd, "--no-merges", "--children")
 	var output, errLog = logCmd.RunAndReturnTrimmedOutput()
 	if errLog != nil {
 		fmt.Printf("Failed get logs for this repository")

@@ -20,6 +20,7 @@ func displayEntries(entries []Entry) {
 
 func getBasicResult(entries []Entry) string {
 	var result string
+	var ticketURLPrefix = getTicketURLPrefix()
 
 	for typeIndex := 0; typeIndex < len(entries); typeIndex++ {
 		entry := entries[typeIndex]
@@ -37,18 +38,18 @@ func getBasicResult(entries []Entry) string {
 				if len(commitList) > 1 {
 					for msgIndex := 0; msgIndex < len(commitList); msgIndex++ {
 						result += "\n"
-						result += "\t\t\t- " + commitList[msgIndex]
+						result += "\t\t\t- " + commitToString(commitList[msgIndex], ticketURLPrefix)
 					}
 				} else {
-					result += commitList[0]
+					result += commitToString(commitList[0], ticketURLPrefix)
 				}
 				result += "\n"
 			}
-			result += "\n\n"
+			result += "\n"
 		}
 	}
 
-	if len(result) == 0{
+	if len(result) == 0 {
 		fmt.Printf("\n\n === No Changelog Generated === \n\n")
 	}
 
@@ -62,4 +63,16 @@ func getSortedKeys(entry Entry) []string {
 	}
 	sort.Strings(keys)
 	return keys
+}
+
+func commitToString(commit Commit, urlPrefix string) string {
+
+	var result = commit.message
+	var ids = commit.ticketIds
+
+	for i := 0; i < len(ids); i++ {
+		var id = ids[i]
+		result = result + " <" + urlPrefix + id + "|#" + id + ">"
+	}
+	return result
 }
