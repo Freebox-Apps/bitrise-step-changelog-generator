@@ -13,8 +13,13 @@ const (
 
 type Entry struct {
 	id        string
-	name        string
-	commitMap map[string][]string // Key is scope and value is list commits related
+	name      string
+	commitMap map[string][]Commit // Key is scope and value is list commits related
+}
+
+type Commit struct {
+	message   string
+	ticketIds []string
 }
 
 func extractCommitListFromString(commits string) []string {
@@ -27,25 +32,28 @@ func fillCommitInfo(commits []string, entries []Entry) {
 		for j := 0; j < len(entries); j++ {
 			_type := entries[j].id
 			if strings.HasPrefix(message, _type) {
-				noTypeMessage := strings.TrimLeft(message, _type)
+				firstLine := strings.Split(message, "\n")[0]
+				noTypeMessage := strings.TrimLeft(firstLine, _type)
 				scope := extractScope(noTypeMessage)
 				noScopeMessage := cleanScope(noTypeMessage)
-				createOrAppendCommit(entries[j].commitMap, scope, noScopeMessage)
+				ticketIds := extractSovledTickets(message)
+				commits := Commit{noScopeMessage, ticketIds}
+				createOrAppendCommit(entries[j].commitMap, scope, commits)
 			}
 		}
 	}
 }
 
-func createOrAppendCommit(commitMap map[string][]string, scope string, message string) {
-	commitMap[scope] = append(commitMap[scope], message)
+func createOrAppendCommit(commitMap map[string][]Commit, scope string, commit Commit) {
+	commitMap[scope] = append(commitMap[scope], commit)
 }
 
 func extractScope(message string) string {
 	regex := regexp.MustCompile(ScopeValueRegex)
 	scope := regex.FindStringSubmatch(message)
-	if len(scope) > 1 {
+	if len(scope) > 1 && scope[1] != "" {
 		return scope[1]
-	} else{
+	} else {
 		return "Unknown"
 	}
 }
@@ -56,7 +64,7 @@ func cleanScope(message string) string {
 	if len(scope) > 1 {
 		noScopeMessage := strings.TrimLeft(message, scope[1])
 		return strings.Trim(noScopeMessage, " ")
-	} else{
+	} else {
 		return message
 	}
 }
