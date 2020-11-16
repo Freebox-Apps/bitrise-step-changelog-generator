@@ -121,3 +121,7 @@ outputs:
     opts:
       title: "Basic formatted changelog"
       description: "Basic formatted changelog"
+  - CHANGELOG_SLACK: ""
+    opts:
+      title: "Get a slack specific formatted changelog"
+      description: "Slack formatted changelog"
