@@ -38,7 +38,7 @@ func getBasicResult(entries []Entry) string {
 				if len(commitList) > 1 {
 					for msgIndex := 0; msgIndex < len(commitList); msgIndex++ {
 						result += "\n"
-						result += "\t\t ◦ " + commitToString(commitList[msgIndex], ticketURLPrefix)
+						result += "\t\t - " + commitToString(commitList[msgIndex], ticketURLPrefix)
 					}
 				} else {
 					result += commitToString(commitList[0], ticketURLPrefix)
@@ -64,19 +64,19 @@ func getSlackResult(entries []Entry) string {
 		entry := entries[typeIndex]
 
 		if len(entry.commitMap) > 0 {
-			result += "*" + entry.name + "*"
+			result += entry.name
 			result += "\n\n"
 
 			keys := getSortedKeys(entry)
 			for j := 0; j < len(keys); j++ {
 				key := keys[j]
 				commitList := entry.commitMap[key]
-				result += "\t*_" + key + ":_* "
+				result += "\t• " + key + ": "
 
 				if len(commitList) > 1 {
 					for msgIndex := 0; msgIndex < len(commitList); msgIndex++ {
 						result += "\n"
-						result += "\t\t • " + commitToMarkdownString(commitList[msgIndex], ticketURLPrefix)
+						result += "\t\t - " + commitToMarkdownString(commitList[msgIndex], ticketURLPrefix)
 					}
 				} else {
 					result += commitToMarkdownString(commitList[0], ticketURLPrefix)
