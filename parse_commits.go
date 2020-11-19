@@ -6,7 +6,6 @@ import (
 )
 
 const (
-	CommitSeparator = "\n\n"
 	ScopeRegex      = "([\\(].*[\\)][\\:])"
 	ScopeValueRegex = "[\\(](.*)[\\)][\\:]"
 )
@@ -20,10 +19,6 @@ type Entry struct {
 type Commit struct {
 	message   string
 	ticketIds []string
-}
-
-func extractCommitListFromString(commits string) []string {
-	return strings.Split(commits, CommitSeparator)
 }
 
 func fillCommitInfo(commits []string, entries []Entry) {

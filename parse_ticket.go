@@ -7,7 +7,7 @@ import (
 
 const (
 	TicketUrlEnv  = "ticket_url"
-	TicketIdRegex = "[#]([^,\\s]+)"
+	TicketIdRegex = "[#]([^,\\s\n]+)"
 )
 
 func getTicketURLPrefix() string {
