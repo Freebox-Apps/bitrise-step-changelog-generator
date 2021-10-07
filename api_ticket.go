@@ -70,7 +70,11 @@ func getTitleForTicket(id string) string {
 		os.Exit(1)
 	}
 
-	return result.Tasks[0].Title
+	if len(result.Tasks) > 0 {
+		return result.Tasks[0].Title
+	} else {
+		return ""
+	}
 }
 
 

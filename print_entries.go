@@ -110,7 +110,11 @@ func commitToString(commit Commit, urlPrefix string) string {
 	for i := 0; i < len(ids); i++ {
 		var id = ids[i]
 		var ticketTitle = getTitleForTicket(id) 
-		result = ticketTitle + " #" + id
+		if ticketTitle != "" {
+			result = ticketTitle + " #" + id
+		} else {
+			result = result + " #" + id
+		}
 	}
 	return result
 }
@@ -122,7 +126,11 @@ func commitToMarkdownString(commit Commit, urlPrefix string) string {
 	for i := 0; i < len(ids); i++ {
 		var id = ids[i]
 		var ticketTitle = getTitleForTicket(id) 
-		result = ticketTitle + " <" + urlPrefix + id + "|#" + id + ">"
+		if ticketTitle != "" {
+			result = ticketTitle + " <" + urlPrefix + id + "|#" + id + ">"
+		} else {
+			result = result + " <" + urlPrefix + id + "|#" + id + ">"
+		}
 	}
 	return result
 }
