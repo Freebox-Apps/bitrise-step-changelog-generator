@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"encoding/json"
 	"net/http"
 	"strings"
@@ -73,6 +74,7 @@ func getTitleForTicket(id string) string {
 	if len(result.Tasks) > 0 {
 		return result.Tasks[0].Title
 	} else {
+		fmt.Printf("Found no task for id : %s \n", id)
 		return ""
 	}
 }
