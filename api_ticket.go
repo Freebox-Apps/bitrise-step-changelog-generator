@@ -8,6 +8,7 @@ import (
 	"mime/multipart"
 	"bytes"
 	"io"
+	"os"
 )
 
 type Response struct {

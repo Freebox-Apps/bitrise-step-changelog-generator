@@ -109,12 +109,14 @@ func commitToString(commit Commit, urlPrefix string) string {
 
 	for i := 0; i < len(ids); i++ {
 		var id = ids[i]
-		result = result + " #" + id
+		var ticketTitle = getTitleForTicket(id) 
+		result = ticketTitle + " #" + id
 	}
 	return result
 }
 
 func commitToMarkdownString(commit Commit, urlPrefix string) string {
+	var result = commit.message
 	var ids = commit.ticketIds
 
 	for i := 0; i < len(ids); i++ {
