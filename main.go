@@ -31,7 +31,7 @@ func main() {
 	if getWrikeAccessToken() != "" {
 		exec.Command("bitrise", "envman", "add", "--key", "CHANGELOG_SLACK", "--value", getSlackResult(entries)).CombinedOutput()
 	} else {
-		exec.Command("bitrise", "envman", "add", "--key", "CHANGELOG_SLACK", "--value", getBasicResult(entries)).CombinedOutput()
+		exec.Command("bitrise", "envman", "add", "--key", "CHANGELOG_SLACK", "--value", unicodeResult).CombinedOutput()
 	}
 	
 	if err != nil {
