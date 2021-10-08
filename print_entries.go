@@ -109,8 +109,7 @@ func commitToString(commit Commit, urlPrefix string) string {
 
 	for i := 0; i < len(ids); i++ {
 		var id = ids[i]
-			result += " #" + id
-		}
+		result += " #" + id
 	}
 	return result
 }
