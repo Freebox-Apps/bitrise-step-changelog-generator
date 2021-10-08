@@ -104,21 +104,11 @@ func getSortedKeys(entry Entry) []string {
 }
 
 func commitToString(commit Commit, urlPrefix string) string {
-	var result = ""
+	var result = commit.message
 	var ids = commit.ticketIds
 
 	for i := 0; i < len(ids); i++ {
 		var id = ids[i]
-		var ticketTitle = getTitleForTicket(id) 
-		if ticketTitle != "" {
-			if i > 0 {
-				result += "\n\t\t - "
-			}
-			result += ticketTitle + " #" + id
-		} else {
-			if i == 0 {
-				result += commit.message
-			}
 			result += " #" + id
 		}
 	}
