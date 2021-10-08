@@ -104,32 +104,44 @@ func getSortedKeys(entry Entry) []string {
 }
 
 func commitToString(commit Commit, urlPrefix string) string {
-	var result = commit.message
+	var result = ""
 	var ids = commit.ticketIds
 
 	for i := 0; i < len(ids); i++ {
 		var id = ids[i]
 		var ticketTitle = getTitleForTicket(id) 
 		if ticketTitle != "" {
-			result = ticketTitle + " #" + id
+			if i > 0 {
+				result += "\n\t\t - "
+			}
+			result += ticketTitle + " #" + id
 		} else {
-			result = result + " #" + id
+			if i == 0 {
+				result += commit.message
+			}
+			result += " #" + id
 		}
 	}
 	return result
 }
 
 func commitToMarkdownString(commit Commit, urlPrefix string) string {
-	var result = commit.message
+	var result = ""
 	var ids = commit.ticketIds
 
 	for i := 0; i < len(ids); i++ {
 		var id = ids[i]
 		var ticketTitle = getTitleForTicket(id) 
 		if ticketTitle != "" {
-			result = ticketTitle + " <" + urlPrefix + id + "|#" + id + ">"
+			if i > 0 {
+				result += "\n\t\t - "
+			}
+			result += ticketTitle + " <" + urlPrefix + id + "|#" + id + ">"
 		} else {
-			result = result + " <" + urlPrefix + id + "|#" + id + ">"
+			if i == 0 {
+				result += commit.message
+			}
+			result += " <" + urlPrefix + id + "|#" + id + ">"
 		}
 	}
 	return result
