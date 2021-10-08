@@ -28,7 +28,7 @@ func main() {
 	}
 
 	cmdLog, err := exec.Command("bitrise", "envman", "add", "--key", "CHANGELOG_BASIC", "--value", unicodeResult).CombinedOutput()
-	if getWrikeAccessToken() != "" {
+	if getWrikeAccessToken() != "" {
 		exec.Command("bitrise", "envman", "add", "--key", "CHANGELOG_SLACK", "--value", getSlackResult(entries)).CombinedOutput()
 	} else {
 		exec.Command("bitrise", "envman", "add", "--key", "CHANGELOG_SLACK", "--value", unicodeResult).CombinedOutput()
