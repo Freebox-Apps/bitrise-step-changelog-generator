@@ -25,28 +25,30 @@ func getBasicResult(entries []Entry) string {
 	for typeIndex := 0; typeIndex < len(entries); typeIndex++ {
 		entry := entries[typeIndex]
 
-		if len(entry.commitMap) > 0 {
-			result += entry.name
-			result += "\n\n"
+		if len(entry.commitMap) == 0 {
+			continue
+		}
+		
+		result += entry.name
+		result += "\n\n"
 
-			keys := getSortedKeys(entry)
-			for j := 0; j < len(keys); j++ {
-				key := keys[j]
-				commitList := entry.commitMap[key]
-				result += "\t• " + key + ": "
+		keys := getSortedKeys(entry)
+		for j := 0; j < len(keys); j++ {
+			key := keys[j]
+			commitList := entry.commitMap[key]
+			result += "\n\t• " + key + ": "
 
-				if len(commitList) > 1 {
-					for msgIndex := 0; msgIndex < len(commitList); msgIndex++ {
-						result += "\n"
-						result += "\t\t - " + commitToString(commitList[msgIndex], ticketURLPrefix)
-					}
-				} else {
-					result += commitToString(commitList[0], ticketURLPrefix)
+			if len(commitList) > 1 {
+				for msgIndex := 0; msgIndex < len(commitList); msgIndex++ {
+					result += "\n"
+					result += "\t\t - " + commitToString(commitList[msgIndex], ticketURLPrefix)
 				}
-				result += "\n"
+			} else {
+				result += commitToString(commitList[0], ticketURLPrefix)
 			}
 			result += "\n"
 		}
+		result += "\n"
 	}
 
 	if len(result) == 0 {
@@ -62,29 +64,58 @@ func getSlackResult(entries []Entry) string {
 
 	for typeIndex := 0; typeIndex < len(entries); typeIndex++ {
 		entry := entries[typeIndex]
+		showTitlePart := false
 
-		if len(entry.commitMap) > 0 {
-			result += entry.name
-			result += "\n\n"
+		if len(entry.commitMap) == 0 {
+			continue
+		}
 
-			keys := getSortedKeys(entry)
-			for j := 0; j < len(keys); j++ {
-				key := keys[j]
-				commitList := entry.commitMap[key]
-				result += "\t• " + key + ": "
+		keys := getSortedKeys(entry)
+		for j := 0; j < len(keys); j++ {
+			key := keys[j]
+			commitList := entry.commitMap[key]
+			showSubTitlePart := false
 
-				if len(commitList) > 1 {
-					for msgIndex := 0; msgIndex < len(commitList); msgIndex++ {
-						result += "\n"
-						result += "\t\t - " + commitToMarkdownString(commitList[msgIndex], ticketURLPrefix)
+			if len(commitList) > 1 {
+				for msgIndex := 0; msgIndex < len(commitList); msgIndex++ {
+					if len(commitList[msgIndex].ticketIds) == 0 {
+						continue
 					}
-				} else {
-					result += commitToMarkdownString(commitList[0], ticketURLPrefix)
+
+					if showTitlePart == false {
+						showTitlePart = true
+						result += entry.name + "\n\n"
+					}
+
+					if showSubTitlePart == false {
+						showSubTitlePart = true
+						result += "\t• " + key + ": "
+					}
+
+					result += "\n"
+					result += "\t\t - " + commitToMarkdownString(commitList[msgIndex], ticketURLPrefix)
 				}
-				result += "\n"
+			} else {
+				if len(commitList[0].ticketIds) == 0 {
+					continue
+				}
+
+				if showTitlePart == false {
+					showTitlePart = true
+					result += entry.name + "\n\n"
+				}
+
+				if showSubTitlePart == false {
+						showSubTitlePart = true
+						result += "\t• " + key + ": "
+					}
+
+				result += commitToMarkdownString(commitList[0], ticketURLPrefix)
 			}
 			result += "\n"
 		}
+
+		result += "\n"
 	}
 
 	if len(result) == 0 {
