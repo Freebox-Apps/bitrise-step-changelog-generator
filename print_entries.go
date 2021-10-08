@@ -89,11 +89,10 @@ func getSlackResult(entries []Entry) string {
 
 					if showSubTitlePart == false {
 						showSubTitlePart = true
-						result += "\t• " + key + ": "
+						result += "\t• " + key + ":\n"
 					}
 
-					result += "\n"
-					result += "\t\t - " + commitToMarkdownString(commitList[msgIndex], ticketURLPrefix)
+					result += "\t\t - " + commitToMarkdownString(commitList[msgIndex], ticketURLPrefix) + "\n"
 				}
 			} else {
 				if len(commitList[0].ticketIds) == 0 {
@@ -107,12 +106,11 @@ func getSlackResult(entries []Entry) string {
 
 				if showSubTitlePart == false {
 						showSubTitlePart = true
-						result += "\t• " + key + ": "
+						result += "\t• " + key + ":\n"
 					}
 
-				result += commitToMarkdownString(commitList[0], ticketURLPrefix)
+				result += commitToMarkdownString(commitList[0], ticketURLPrefix) + "\n"
 			}
-			result += "\n"
 		}
 
 		result += "\n"
