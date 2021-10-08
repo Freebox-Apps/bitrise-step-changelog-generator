@@ -71,6 +71,13 @@ toolkit:
     package_name: github.com/Freebox-CI/bitrise-step-changelog-generator
 
 inputs:
+  - wrike_token:
+    opts:
+      title: Wrike API Token
+      description: Create a permanent API token in Wrike settings to allow Bitrise to access  it.
+      is_expand: true
+      is_required: false
+      is_sensitive: true
   - repo_dir: "."
     opts:
       title: Git repository local directory
