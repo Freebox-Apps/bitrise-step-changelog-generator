@@ -15,8 +15,8 @@ import (
 type Response struct {
 	Kind		string  `json:"kind"`
 	Tasks		[]struct {
-		Id			string 	`json:"id"`
-		AccountId	string 	`json:"accountId"`
+		Id 			string 	`json:"id"`
+		AccountId 	string 	`json:"accountId"`
 		Title 		string 	`json:"title"`
 	} `json:"data"`
 }
@@ -34,10 +34,10 @@ func getTitleForTicket(id string) string {
 
 	// Creation multipart/form-data
 	bodyReq := &bytes.Buffer{}
-    writer := multipart.NewWriter(bodyReq)
-    fw, err := writer.CreateFormField("permalink")
-    io.Copy(fw, strings.NewReader("https://www.wrike.com/open.htm?id=" + id))
-    writer.Close()
+	writer := multipart.NewWriter(bodyReq)
+	fw, err := writer.CreateFormField("permalink")
+	io.Copy(fw, strings.NewReader("https://www.wrike.com/open.htm?id=" + id))
+	writer.Close()
 
 	// Create req with url and body param
 	req, err := http.NewRequest(http.MethodGet, url, bytes.NewReader(bodyReq.Bytes()))
@@ -78,8 +78,3 @@ func getTitleForTicket(id string) string {
 		return ""
 	}
 }
-
-
-
-
-
