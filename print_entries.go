@@ -89,10 +89,10 @@ func getSlackResult(entries []Entry) string {
 
 					if showSubTitlePart == false {
 						showSubTitlePart = true
-						result += "\t• " + key + ":\n"
+						result += "\n\t• " + key + ":\n"
 					}
 
-					result += "\t\t - " + commitToMarkdownString(commitList[msgIndex], ticketURLPrefix) + "\n"
+					result += commitToMarkdownString(commitList[msgIndex], ticketURLPrefix) + "\n"
 				}
 			} else {
 				if len(commitList[0].ticketIds) == 0 {
@@ -106,7 +106,7 @@ func getSlackResult(entries []Entry) string {
 
 				if showSubTitlePart == false {
 						showSubTitlePart = true
-						result += "\t• " + key + ":\n"
+						result += "\n\t• " + key + ":\n"
 					}
 
 				result += commitToMarkdownString(commitList[0], ticketURLPrefix) + "\n"
@@ -150,11 +150,10 @@ func commitToMarkdownString(commit Commit, urlPrefix string) string {
 		var id = ids[i]
 		var ticketTitle = getTitleForTicket(id) 
 		if ticketTitle != "" {
-			if i > 0 {
-				result += "\n\t\t - "
-			}
+			result += "\n\t\t - "
 			result += ticketTitle + " <" + urlPrefix + id + "|#" + id + ">"
 		} else {
+			result += "\n\t\t - "
 			if i == 0 {
 				result += commit.message
 			}
