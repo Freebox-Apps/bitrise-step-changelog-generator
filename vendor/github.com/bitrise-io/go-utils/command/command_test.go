@@ -1,49 +1,64 @@
 package command
 
 import (
+	"github.com/bitrise-io/go-utils/env"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 )
 
-func TestNewCommandSlice(t *testing.T) {
-	t.Log("it fails if slice empty")
-	{
-		cmd, err := NewFromSlice([]string{})
-		require.Error(t, err)
-		require.Equal(t, (*Model)(nil), cmd)
+func TestRunCmdAndReturnExitCode(t *testing.T) {
+	type args struct {
+		cmd Command
 	}
-
-	t.Log("it creates cmd if cmdSlice has 1 element")
-	{
-		_, err := NewFromSlice([]string{"ls"})
-		require.NoError(t, err)
+	factory := NewFactory(env.NewRepository())
+	tests := []struct {
+		name         string
+		args         args
+		wantExitCode int
+		wantErr      bool
+	}{
+		{
+			name: "invalid command",
+			args: args{
+				cmd: factory.Create("", nil, nil),
+			},
+			wantExitCode: -1,
+			wantErr:      true,
+		},
+		{
+			name: "env command",
+			args: args{
+				cmd: factory.Create("env", nil, nil),
+			},
+			wantExitCode: 0,
+			wantErr:      false,
+		},
+		{
+			name: "not existing executable",
+			args: args{
+				cmd: factory.Create("bash", []string{"testdata/not_existing_executable.sh"}, nil),
+			},
+			wantExitCode: 127,
+			wantErr:      true,
+		},
+		{
+			name: "exit 42",
+			args: args{
+				cmd: factory.Create("bash", []string{"testdata/exit_42.sh"}, nil),
+			},
+			wantExitCode: 42,
+			wantErr:      true,
+		},
 	}
-
-	t.Log("it creates cmd if cmdSlice has multiple elements")
-	{
-		_, err := NewFromSlice([]string{"ls", "-a", "-l", "-h"})
-		require.NoError(t, err)
-	}
-}
-
-func TestNewWithParams(t *testing.T) {
-	t.Log("it fails if params empty")
-	{
-		cmd, err := NewWithParams()
-		require.Error(t, err)
-		require.Equal(t, (*Model)(nil), cmd)
-	}
-
-	t.Log("it creates cmd if params has 1 element")
-	{
-		_, err := NewWithParams("ls")
-		require.NoError(t, err)
-	}
-
-	t.Log("it creates cmd if params has multiple elements")
-	{
-		_, err := NewWithParams("ls", "-a", "-l", "-h")
-		require.NoError(t, err)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotExitCode, err := tt.args.cmd.RunAndReturnExitCode()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("command.RunAndReturnExitCode() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if gotExitCode != tt.wantExitCode {
+				t.Errorf("command.RunAndReturnExitCode() = %v, want %v", gotExitCode, tt.wantExitCode)
+			}
+		})
 	}
 }
