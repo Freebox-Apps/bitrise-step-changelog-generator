@@ -84,7 +84,7 @@ func getSlackResult(entries []Entry) string {
 
 					if showTitlePart == false {
 						showTitlePart = true
-						result += entry.name + "\n\n"
+						result += "\n" + entry.name + "\n"
 					}
 
 					if showSubTitlePart == false {
@@ -101,7 +101,7 @@ func getSlackResult(entries []Entry) string {
 
 				if showTitlePart == false {
 					showTitlePart = true
-					result += entry.name + "\n\n"
+					result += "\n" + entry.name + "\n"
 				}
 
 				if showSubTitlePart == false {
