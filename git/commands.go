@@ -5,7 +5,7 @@ import (
 )
 
 // Log shows the commit logs. The format parameter controls what is shown and how.
-func (g *Git) Log(format string, commitStart string, commitEnd string, otherOptions ...string) *command.Model {
+func (g *Git) Log(format string, commitStart string, commitEnd string, otherOptions ...string) command.Command {
 
 	var options []string
 
@@ -32,6 +32,6 @@ func (g *Git) Log(format string, commitStart string, commitEnd string, otherOpti
 	return g.command(log...)
 }
 
-func (g *Git) FetchTags() *command.Model {
-	return g.command("fetch", "--tags")
+func (g *Git) FetchTags() command.Command {
+	return g.command("fetch", "--tags", "--force")
 }
