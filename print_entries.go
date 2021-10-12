@@ -30,7 +30,7 @@ func getBasicResult(entries []Entry) string {
 		}
 		
 		result += entry.name
-		result += "\n\n"
+		result += "\n"
 
 		keys := getSortedKeys(entry)
 		for j := 0; j < len(keys); j++ {
@@ -48,7 +48,7 @@ func getBasicResult(entries []Entry) string {
 			}
 			result += "\n"
 		}
-		result += "\n"
+		result += "\n\n"
 	}
 
 	if len(result) == 0 {
