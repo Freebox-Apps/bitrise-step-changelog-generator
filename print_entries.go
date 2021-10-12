@@ -30,7 +30,7 @@ func getBasicResult(entries []Entry) string {
 		}
 		
 		result += entry.name
-		result += "\n\n"
+		result += "\n"
 
 		keys := getSortedKeys(entry)
 		for j := 0; j < len(keys); j++ {
@@ -48,7 +48,7 @@ func getBasicResult(entries []Entry) string {
 			}
 			result += "\n"
 		}
-		result += "\n"
+		result += "\n\n"
 	}
 
 	if len(result) == 0 {
@@ -65,6 +65,7 @@ func getSlackResult(entries []Entry) string {
 	for typeIndex := 0; typeIndex < len(entries); typeIndex++ {
 		entry := entries[typeIndex]
 		showTitlePart := false
+		typeResult := ""
 
 		if len(entry.commitMap) == 0 {
 			continue
@@ -75,45 +76,34 @@ func getSlackResult(entries []Entry) string {
 			key := keys[j]
 			commitList := entry.commitMap[key]
 			showSubTitlePart := false
-
-			if len(commitList) > 1 {
-				for msgIndex := 0; msgIndex < len(commitList); msgIndex++ {
-					if len(commitList[msgIndex].ticketIds) == 0 {
-						continue
-					}
-
-					if showTitlePart == false {
-						showTitlePart = true
-						result += "\n" + entry.name + "\n"
-					}
-
-					if showSubTitlePart == false {
-						showSubTitlePart = true
-						result += "\n\t• " + key + ":\n"
-					}
-
-					result += commitToMarkdownString(commitList[msgIndex], ticketURLPrefix) + "\n"
-				}
-			} else {
-				if len(commitList[0].ticketIds) == 0 {
+			scopeResult := ""
+			
+			for msgIndex := 0; msgIndex < len(commitList); msgIndex++ {
+				if len(commitList[msgIndex].ticketIds) == 0 {
 					continue
 				}
 
 				if showTitlePart == false {
 					showTitlePart = true
-					result += "\n" + entry.name + "\n"
+					scopeResult += "\n" + entry.name + "\n"
 				}
 
 				if showSubTitlePart == false {
-						showSubTitlePart = true
-						result += "\n\t• " + key + ":\n"
-					}
+					showSubTitlePart = true
+					scopeResult += "\n\t• " + key
+				}
 
-				result += commitToMarkdownString(commitList[0], ticketURLPrefix) + "\n"
+				scopeResult += commitToMarkdownString(commitList[msgIndex], ticketURLPrefix)
+			}
+
+			if scopeResult != "" {
+				typeResult += scopeResult + "\n"
 			}
 		}
 
-		result += "\n"
+		if typeResult != "" {
+			result += typeResult + "\n"
+		}
 	}
 
 	if len(result) == 0 {

@@ -64,7 +64,7 @@ func getLogs(gitCmd git.Git, commitStart string, commitEnd string) string {
 		fmt.Printf("Failed get logs for this repository")
 		os.Exit(1)
 	}
-	if isDebug() {
+	if isDebugBasic() {
 		fmt.Printf("Git Executing command: %s\n", logCmd.PrintableCommandArgs())
 	}
 	return output
