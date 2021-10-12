@@ -65,7 +65,7 @@ func getLogs(gitCmd git.Git, commitStart string, commitEnd string) string {
 		os.Exit(1)
 	}
 	if isDebug() {
-		fmt.Printf("Git Executing command: %s\n", logCmd.GetCmd().Args)
+		fmt.Printf("Git Executing command: %s\n", logCmd.PrintableCommandArgs())
 	}
 	return output
 }
