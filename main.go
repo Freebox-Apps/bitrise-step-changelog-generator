@@ -8,13 +8,12 @@ import (
 
 const (
 	RepoDirectoryEnv = "repo_dir"
-	DebugEnv         = "debug"
+	DebugEnv         = "debug_basic"
+	DebugSlackEnv    = "debug_slack"
 	DebugKeyOk       = "yes"
 )
 
 func main() {
-	isDebug := isDebug()
-
 	commitStrList := getCommitStringList()
 	fmt.Printf("Found %d commit candidates\n", len(commitStrList))
 	prefixStrList := extractTypeList()
@@ -22,14 +21,19 @@ func main() {
 	fillCommitInfo(commitStrList, entries)
 	displayEntries(entries)
 	unicodeResult := getBasicResult(entries)
+	slackResult := getSlackResult(entries)
 
-	if isDebug {
+	if isDebugBasic() {
 		fmt.Printf("%s", unicodeResult)
+	}
+
+	if isDebugSlack() {
+		fmt.Printf("%s", slackResult)
 	}
 
 	cmdLog, err := exec.Command("bitrise", "envman", "add", "--key", "CHANGELOG_BASIC", "--value", unicodeResult).CombinedOutput()
 	if getWrikeAccessToken() != "" {
-		exec.Command("bitrise", "envman", "add", "--key", "CHANGELOG_SLACK", "--value", getSlackResult(entries)).CombinedOutput()
+		exec.Command("bitrise", "envman", "add", "--key", "CHANGELOG_SLACK", "--value", slackResult).CombinedOutput()
 	} else {
 		exec.Command("bitrise", "envman", "add", "--key", "CHANGELOG_SLACK", "--value", unicodeResult).CombinedOutput()
 	}
@@ -42,6 +46,10 @@ func main() {
 	}
 }
 
-func isDebug() bool {
+func isDebugBasic() bool {
 	return os.Getenv(DebugEnv) == DebugKeyOk
+}
+
+func isDebugSlack() bool {
+	return os.Getenv(DebugSlackEnv) == DebugKeyOk
 }

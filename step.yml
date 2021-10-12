@@ -116,9 +116,15 @@ inputs:
 
       is_expand: false
       is_required: true
-  - debug: "no"
+  - debug_basic: "no"
     opts:
       title: show debug info
+      value_options:
+       - "no"
+       - "yes"
+  - debug_slack: "no"
+    opts:
+      title: show debug slack info
       value_options:
        - "no"
        - "yes"
