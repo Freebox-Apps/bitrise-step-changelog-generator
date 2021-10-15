@@ -29,8 +29,7 @@ func getBasicResult(entries []Entry) string {
 			continue
 		}
 		
-		result += entry.name
-		result += "\n"
+		result += entry.name + "\n"
 
 		keys := getSortedKeys(entry)
 		for j := 0; j < len(keys); j++ {
@@ -52,7 +51,7 @@ func getBasicResult(entries []Entry) string {
 	}
 
 	if len(result) == 0 {
-		fmt.Printf("\n\n === No Changelog Generated === \n\n")
+		fmt.Printf("\n\n === No Debug Changelog Generated === \n\n")
 	}
 
 	return result
@@ -85,7 +84,7 @@ func getSlackResult(entries []Entry) string {
 
 				if showTitlePart == false {
 					showTitlePart = true
-					scopeResult += "\n" + entry.name + "\n"
+					scopeResult += entry.name + "\n"
 				}
 
 				if showSubTitlePart == false {
@@ -102,12 +101,12 @@ func getSlackResult(entries []Entry) string {
 		}
 
 		if typeResult != "" {
-			result += typeResult + "\n"
+			result += typeResult + "\n\n"
 		}
 	}
 
 	if len(result) == 0 {
-		fmt.Printf("\n\n === No Changelog Generated === \n\n")
+		fmt.Printf("\n\n === No Slack Changelog Generated === \n\n")
 	}
 
 	return result
