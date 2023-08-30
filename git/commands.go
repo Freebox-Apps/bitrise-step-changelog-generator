@@ -17,9 +17,9 @@ func (g *Git) Log(format string, commitStart string, commitEnd string, otherOpti
 	// Handle commit range
 	if len(commitStart) > 0 {
 		if len(commitEnd) > 0 {
-			options = append(options, commitStart+"..."+commitEnd)
+			options = append(options, commitStart+".."+commitEnd)
 		} else {
-			options = append(options, commitStart+"...HEAD")
+			options = append(options, commitStart+"..HEAD")
 		}
 	}
 
