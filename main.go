@@ -11,6 +11,7 @@ const (
 	DebugEnv         = "debug_basic"
 	DebugSlackEnv    = "debug_slack"
 	DebugKeyOk       = "yes"
+	BasicChangelogMaxLength = 16384
 )
 
 func main() {
@@ -21,6 +22,11 @@ func main() {
 	fillCommitInfo(commitStrList, entries)
 	displayEntries(entries)
 	unicodeResult := getBasicResult(entries)
+
+	if len(unicodeResult) > BasicChangelogMaxLength {
+		unicodeResult = [:BasicChangelogMaxLength]
+	}
+	
 	slackResult := getSlackResult(entries)
 
 	if isDebugBasic() {
