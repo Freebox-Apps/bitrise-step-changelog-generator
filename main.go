@@ -24,7 +24,7 @@ func main() {
 	unicodeResult := getBasicResult(entries)
 
 	if len(unicodeResult) > BasicChangelogMaxLength {
-		unicodeResult = [:BasicChangelogMaxLength]
+		unicodeResult = unicodeResult[:BasicChangelogMaxLength]
 	}
 	
 	slackResult := getSlackResult(entries)
