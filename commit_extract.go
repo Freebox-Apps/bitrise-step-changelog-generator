@@ -1,11 +1,10 @@
 package main
 
 import (
+	"changelog-generator/git"
 	"fmt"
 	"os"
 	"strings"
-
-	"github.com/Freebox-CI/bitrise-step-changelog-generator/git"
 )
 
 const (

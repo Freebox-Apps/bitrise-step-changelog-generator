@@ -1,10 +1,10 @@
 package git
 
 import (
-	"github.com/bitrise-io/go-utils/env"
 	"os"
 
-	"github.com/bitrise-io/go-utils/command"
+	"github.com/bitrise-io/go-utils/v2/command"
+	"github.com/bitrise-io/go-utils/v2/env"
 )
 
 // Git represents a Git project.
