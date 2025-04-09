@@ -7,10 +7,11 @@ import (
 )
 
 const (
-	RepoDirectoryEnv = "repo_dir"
-	DebugEnv         = "debug_basic"
-	DebugSlackEnv    = "debug_slack"
-	DebugKeyOk       = "yes"
+	RepoDirectoryEnv        = "repo_dir"
+	DebugEnv                = "debug_basic"
+	DebugSlackEnv           = "debug_slack"
+	DebugHtmlEnv            = "debug_html"
+	DebugKeyOk              = "yes"
 	BasicChangelogMaxLength = 16384
 )
 
@@ -26,24 +27,38 @@ func main() {
 	if len(unicodeResult) > BasicChangelogMaxLength {
 		unicodeResult = unicodeResult[:BasicChangelogMaxLength]
 	}
-	
-	slackResult := getSlackResult(entries)
+
+	slackResult := getMarkdownResult(entries)
+	htmlResult := getHtmlResult(entries)
+
+	if isDebugBasic() || isDebugSlack() || isDebugHtml() {
+		fmt.Printf("\n    -------- Debug output(s) --------\n\n")
+	}
 
 	if isDebugBasic() {
-		fmt.Printf("%s", unicodeResult)
+		fmt.Printf("\t---------------- Unicode Result ----------------\n\n%s\n\n", unicodeResult)
 	}
 
 	if isDebugSlack() {
-		fmt.Printf("%s", slackResult)
+		fmt.Printf("\t---------------- Slack Result ----------------\n\n%s\n\n", slackResult)
+	}
+
+	if isDebugHtml() {
+		fmt.Printf("\t---------------- HTML Result ----------------\n\n%s\n\n", htmlResult)
+	}
+	if isDebugBasic() || isDebugSlack() || isDebugHtml() {
+		fmt.Printf("    -------------------------------\n\n")
 	}
 
 	cmdLog, err := exec.Command("bitrise", "envman", "add", "--key", "CHANGELOG_BASIC", "--value", unicodeResult).CombinedOutput()
 	if getWrikeAccessToken() != "" {
 		exec.Command("bitrise", "envman", "add", "--key", "CHANGELOG_SLACK", "--value", slackResult).CombinedOutput()
+		exec.Command("bitrise", "envman", "add", "--key", "CHANGELOG_HTML", "--value", htmlResult).CombinedOutput()
 	} else {
 		exec.Command("bitrise", "envman", "add", "--key", "CHANGELOG_SLACK", "--value", unicodeResult).CombinedOutput()
+		exec.Command("bitrise", "envman", "add", "--key", "CHANGELOG_HTML", "--value", unicodeResult).CombinedOutput()
 	}
-	
+
 	if err != nil {
 		fmt.Printf("Failed to expose output with envman, error: %#v | output: %s", err, cmdLog)
 		os.Exit(1)
@@ -58,4 +73,8 @@ func isDebugBasic() bool {
 
 func isDebugSlack() bool {
 	return os.Getenv(DebugSlackEnv) == DebugKeyOk
+}
+
+func isDebugHtml() bool {
+	return os.Getenv(DebugHtmlEnv) == DebugKeyOk
 }

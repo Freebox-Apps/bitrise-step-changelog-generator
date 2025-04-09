@@ -128,6 +128,12 @@ inputs:
       value_options:
        - "no"
        - "yes"
+  - debug_html: "no"
+    opts:
+      title: show debug html info
+      value_options:
+       - "no"
+       - "yes"
 
 outputs:
   - CHANGELOG_BASIC: ""
@@ -138,3 +144,7 @@ outputs:
     opts:
       title: "Get a slack specific formatted changelog"
       description: "Slack formatted changelog"
+  - CHANGELOG_HTML: ""
+    opts:
+      title: "Get an html content specific formatted changelog"
+      description: "HTML formatted changelog"

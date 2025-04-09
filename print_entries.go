@@ -28,7 +28,7 @@ func getBasicResult(entries []Entry) string {
 		if len(entry.commitMap) == 0 {
 			continue
 		}
-		
+
 		result += entry.name + "\n"
 
 		keys := getSortedKeys(entry)
@@ -57,7 +57,7 @@ func getBasicResult(entries []Entry) string {
 	return result
 }
 
-func getSlackResult(entries []Entry) string {
+func getMarkdownResult(entries []Entry) string {
 	var result string
 	var ticketURLPrefix = getTicketURLPrefix()
 
@@ -76,18 +76,18 @@ func getSlackResult(entries []Entry) string {
 			commitList := entry.commitMap[key]
 			showSubTitlePart := false
 			scopeResult := ""
-			
+
 			for msgIndex := 0; msgIndex < len(commitList); msgIndex++ {
 				if len(commitList[msgIndex].ticketIds) == 0 {
 					continue
 				}
 
-				if showTitlePart == false {
+				if !showTitlePart {
 					showTitlePart = true
 					scopeResult += entry.name + "\n"
 				}
 
-				if showSubTitlePart == false {
+				if !showSubTitlePart {
 					showSubTitlePart = true
 					scopeResult += "\n\t• " + key
 				}
@@ -107,6 +107,63 @@ func getSlackResult(entries []Entry) string {
 
 	if len(result) == 0 {
 		fmt.Printf("\n\n === No Slack Changelog Generated === \n\n")
+	}
+
+	return result
+}
+
+func getHtmlResult(entries []Entry) string {
+
+	var result string
+	var ticketURLPrefix = getTicketURLPrefix()
+
+	for typeIndex := 0; typeIndex < len(entries); typeIndex++ {
+		entry := entries[typeIndex]
+		showTitlePart := false
+		typeResult := ""
+
+		if len(entry.commitMap) == 0 {
+			continue
+		}
+
+		keys := getSortedKeys(entry)
+		for j := 0; j < len(keys); j++ {
+			key := keys[j]
+			commitList := entry.commitMap[key]
+			showSubTitlePart := false
+			scopeResult := ""
+
+			for msgIndex := 0; msgIndex < len(commitList); msgIndex++ {
+				if len(commitList[msgIndex].ticketIds) == 0 {
+					continue
+				}
+
+				if !showTitlePart {
+					showTitlePart = true
+					scopeResult += "\n<h1>" + entry.name + "</h1>"
+					scopeResult += "\n<ul>"
+				}
+
+				if !showSubTitlePart {
+					showSubTitlePart = true
+					scopeResult += "\n\t<li><i><b>" + key + "</b></i></li>"
+				}
+
+				scopeResult += commitToHtmlString(commitList[msgIndex], ticketURLPrefix)
+			}
+
+			if scopeResult != "" {
+				typeResult += scopeResult
+			}
+		}
+
+		if typeResult != "" {
+			result += typeResult + "\n</ul>"
+		}
+	}
+
+	if len(result) == 0 {
+		fmt.Printf("\n\n === No HTML Changelog Generated === \n\n")
 	}
 
 	return result
@@ -137,7 +194,7 @@ func commitToMarkdownString(commit Commit, urlPrefix string) string {
 
 	for i := 0; i < len(ids); i++ {
 		var id = ids[i]
-		var ticketTitle = getTitleForTicket(id) 
+		var ticketTitle = getTitleForTicket(id)
 		if ticketTitle != "" {
 			result += "\n\t\t - "
 			result += ticketTitle + " <" + urlPrefix + id + "|#" + id + ">"
@@ -149,5 +206,27 @@ func commitToMarkdownString(commit Commit, urlPrefix string) string {
 			result += " <" + urlPrefix + id + "|#" + id + ">"
 		}
 	}
+	return result
+}
+
+func commitToHtmlString(commit Commit, urlPrefix string) string {
+	var result = "\n\t\t<ul>"
+	var ids = commit.ticketIds
+
+	for i := 0; i < len(ids); i++ {
+		var id = ids[i]
+		var ticketTitle = getTitleForTicket(id)
+		result += "\n\t\t\t<li>"
+		if ticketTitle != "" {
+			result += ticketTitle + " <a href=" + urlPrefix + id + ">#" + id + "</a>"
+		} else {
+			if i == 0 {
+				result += commit.message
+			}
+			result += " <a href=" + urlPrefix + id + ">#" + id + "</a>"
+		}
+		result += "</li>"
+	}
+	result += "\n\t\t</ul>"
 	return result
 }
