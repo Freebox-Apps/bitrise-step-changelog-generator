@@ -1,28 +1,27 @@
 package main
 
 import (
-	"fmt"
-	"encoding/json"
-	"net/http"
-	"strings"
-	"io/ioutil"
-	"mime/multipart"
 	"bytes"
+	"encoding/json"
+	"fmt"
 	"io"
+	"mime/multipart"
+	"net/http"
 	"os"
+	"strings"
 )
 
 type Response struct {
-	Kind		string  `json:"kind"`
-	Tasks		[]struct {
-		Id 			string 	`json:"id"`
-		AccountId 	string 	`json:"accountId"`
-		Title 		string 	`json:"title"`
+	Kind  string `json:"kind"`
+	Tasks []struct {
+		Id        string `json:"id"`
+		AccountId string `json:"accountId"`
+		Title     string `json:"title"`
 	} `json:"data"`
 }
 
 const (
-	WrikeTokenEnv  = "wrike_token"
+	WrikeTokenEnv = "wrike_token"
 )
 
 func getWrikeAccessToken() string {
@@ -35,8 +34,8 @@ func getTitleForTicket(id string) string {
 	// Creation multipart/form-data
 	bodyReq := &bytes.Buffer{}
 	writer := multipart.NewWriter(bodyReq)
-	fw, err := writer.CreateFormField("permalink")
-	io.Copy(fw, strings.NewReader("https://www.wrike.com/open.htm?id=" + id))
+	fw, _ := writer.CreateFormField("permalink")
+	io.Copy(fw, strings.NewReader("https://www.wrike.com/open.htm?id="+id))
 	writer.Close()
 
 	// Create req with url and body param
@@ -44,10 +43,10 @@ func getTitleForTicket(id string) string {
 
 	if err != nil {
 		os.Exit(1)
-	}	
+	}
 
 	// Add Header Params
-	req.Header.Add("Authorization", "Bearer " + getWrikeAccessToken())
+	req.Header.Add("Authorization", "Bearer "+getWrikeAccessToken())
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 
 	client := &http.Client{}
@@ -60,7 +59,7 @@ func getTitleForTicket(id string) string {
 		defer res.Body.Close()
 	}
 
-	body, readErr := ioutil.ReadAll(res.Body)
+	body, readErr := io.ReadAll(res.Body)
 	if readErr != nil {
 		os.Exit(1)
 	}

@@ -1,7 +1,7 @@
 package git
 
 import (
-	"github.com/bitrise-io/go-utils/command"
+	"github.com/bitrise-io/go-utils/v2/command"
 )
 
 // Log shows the commit logs. The format parameter controls what is shown and how.
