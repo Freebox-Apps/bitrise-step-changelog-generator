@@ -73,11 +73,33 @@ toolkit:
 inputs:
   - wrike_token:
     opts:
-      title: Wrike API Token
+      title: Wrike API Token (only one ticket provider allowed)
       description: Create a permanent API token in Wrike settings to allow Bitrise to access  it.
       is_expand: true
       is_required: false
       is_sensitive: true
+  - jira_domain:
+    opts:
+      title: Jira company's domain (only one ticket provider allowed)
+      description: URL of the presonal JIRA software.
+      is_expand: true
+      is_required: false
+  - jira_token:
+    opts:
+      title: Jira user API Token
+      description: |
+        Create a temporary Jira API token on [atlassian website](https://id.atlassian.com/manage-profile/security/api-tokens) to allow Bitrise to access it.
+        
+        ⚠️ Tokens are invalidate after 365 days ⚠️
+      is_expand: true
+      is_required: false
+      is_sensitive: true
+  - jira_user:
+    opts:
+      title: Jira user email
+      description: Jira user used to authenticate with Jira API e.g. "someone@example.pl"
+      is_expand: true
+      is_required: false
   - repo_dir: "."
     opts:
       title: Git repository local directory
@@ -110,26 +132,29 @@ inputs:
       title: Ticket url start 
       summary: Set your ticket tracking url.
       description: |
-        Set your ticket tracking url.
+        Set your ticket tracking base url.
 
         `https://myFavoritTicketManager.com/whatever?id=`
 
-      is_expand: false
+      is_expand: true
       is_required: true
   - debug_basic: "no"
     opts:
+      category: Debug
       title: show debug info
       value_options:
        - "no"
        - "yes"
   - debug_slack: "no"
     opts:
+      category: Debug
       title: show debug slack info
       value_options:
        - "no"
        - "yes"
   - debug_html: "no"
     opts:
+      category: Debug
       title: show debug html info
       value_options:
        - "no"

@@ -7,6 +7,10 @@ app:
   - BITRISE_STEP_VERSION: 1.1.0
   - BITRISE_STEP_GIT_CLONE_URL: https://github.com/Freebox-CI/bitrise-step-changelog-generator.git
   - MY_STEPLIB_REPO_FORK_GIT_URL: $MY_STEPLIB_REPO_FORK_GIT_URL
+  - TEAMS_WEBHOOK:
+  - JIRA_DOMAIN: 
+    opts:
+      is_expand: false
 workflows:
   test:
     steps:
