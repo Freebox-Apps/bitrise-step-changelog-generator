@@ -51,13 +51,8 @@ func main() {
 	}
 
 	cmdLog, err := exec.Command("bitrise", "envman", "add", "--key", "CHANGELOG_BASIC", "--value", unicodeResult).CombinedOutput()
-	if getWrikeAccessToken() != "" {
-		exec.Command("bitrise", "envman", "add", "--key", "CHANGELOG_SLACK", "--value", slackResult).CombinedOutput()
-		exec.Command("bitrise", "envman", "add", "--key", "CHANGELOG_HTML", "--value", htmlResult).CombinedOutput()
-	} else {
-		exec.Command("bitrise", "envman", "add", "--key", "CHANGELOG_SLACK", "--value", unicodeResult).CombinedOutput()
-		exec.Command("bitrise", "envman", "add", "--key", "CHANGELOG_HTML", "--value", unicodeResult).CombinedOutput()
-	}
+	exec.Command("bitrise", "envman", "add", "--key", "CHANGELOG_SLACK", "--value", slackResult).CombinedOutput()
+	exec.Command("bitrise", "envman", "add", "--key", "CHANGELOG_HTML", "--value", htmlResult).CombinedOutput()
 
 	if err != nil {
 		fmt.Printf("Failed to expose output with envman, error: %#v | output: %s", err, cmdLog)
