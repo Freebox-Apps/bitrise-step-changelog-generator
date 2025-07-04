@@ -132,10 +132,9 @@ func getTitleForJiraTicket(issueKey string) string {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		fmt.Printf("Error : HTTP status %d\n", resp.StatusCode)
 		body, _ := io.ReadAll(resp.Body)
-		fmt.Println(string(body))
-		os.Exit(1)
+		fmt.Printf("Error ticket %s: %s\n", issueKey, string(body))
+		return ""
 	}
 
 	// Read and pars la réponse JSON
@@ -147,8 +146,8 @@ func getTitleForJiraTicket(issueKey string) string {
 
 	err = json.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
-		fmt.Println("Error parsing JSON :", err)
-		os.Exit(1)
+		fmt.Printf("Error JSON parsing ticket %s: %s\n", issueKey, err)
+		return ""
 	}
 	return result.Fields.Summary
 }
