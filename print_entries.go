@@ -169,6 +169,43 @@ func getHtmlResult(entries []Entry) string {
 	return result
 }
 
+func getNewHtmlResult(changeLog ChangeLog) string {
+	ticketURLPrefix := getTicketURLPrefix()
+	var result string
+
+	for _, typeSection := range changeLog.sections {
+		typeName := typeSection.title
+        if len(typeSection.categories) > 0 {
+			result += "\n<h1>" + typeName + "</h1>"
+			result += "\n<ul>"
+
+            for _, logCategory := range typeSection.categories {
+				categoryId := logCategory.ticketId
+			    logEntries := logCategory.entries
+
+			    categoryLink := " <a href=" + ticketURLPrefix + categoryId + ">" + logCategory.title + "</a>"
+				if categoryId == "" {
+					categoryLink = logCategory.title
+				}
+
+			    result += "\n\t<li><i><b>" + categoryLink + "</b></i></li>"
+			    result += "\n\t\t<ul>"
+
+			    for _, logEntry := range logEntries {
+				    ticketTitle := logEntry.title
+				    ticketId := logEntry.ticketId
+
+				    result += "\n\t\t\t<li>" + ticketTitle + " <a href=" + ticketURLPrefix + ticketId + ">#" + ticketId + "</a></li>"
+			    }
+			    result += "\n\t\t</ul>"
+		    }
+			result += "\n</ul>"
+        }
+	}
+
+	return result
+}
+
 func getSortedKeys(entry Entry) []string {
 	keys := make([]string, 0, len(entry.commitMap))
 	for k := range entry.commitMap {
@@ -194,10 +231,10 @@ func commitToMarkdownString(commit Commit, urlPrefix string) string {
 
 	for i := 0; i < len(ids); i++ {
 		var id = ids[i]
-		var ticketTitle = getTitleForTicket(id)
-		if ticketTitle != "" {
+		var ticket = getTicketInfo(id)
+		if ticket.title != "" {
 			result += "\n\t\t - "
-			result += ticketTitle + " <" + urlPrefix + id + "|#" + id + ">"
+			result += ticket.title + " <" + urlPrefix + id + "|#" + id + ">"
 		} else {
 			result += "\n\t\t - "
 			if i == 0 {

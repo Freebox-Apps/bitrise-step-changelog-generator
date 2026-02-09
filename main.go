@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"maps"
+	"slices"
+	"sort"
 )
 
 const (
@@ -14,6 +17,68 @@ const (
 	DebugKeyOk              = "yes"
 	BasicChangelogMaxLength = 16384
 )
+
+type LogEntry struct {
+	title string
+	ticketId string
+}
+
+type LogCategory struct {
+	index int
+	title string
+	ticketId string
+	entries []LogEntry
+}
+
+type TypeSection struct {
+	index int
+	title string
+	categories []LogCategory
+}
+
+type ChangeLog struct {
+	sections []TypeSection
+}
+
+func getJiraChangeLog(entries []Entry) ChangeLog {
+	typeMap := make(map[string]TypeSection)
+	for j := 0; j < len(entries); j++ {
+		entry := entries[j]
+		catMap := make(map[string]LogCategory)
+		for k, commits := range slices.Collect(maps.Values(entry.commitMap)) {
+			for l := 0; l < len(commits); l++ {
+				commit := commits[l]
+				for m := 0; m < len(commit.ticketIds); m++ {
+					ticketId := commit.ticketIds[m]
+					ticket := getTicketInfo(ticketId)
+					category, exists := catMap[ticket.parentTicketId]
+					if !exists {
+						var entries []LogEntry
+						index := k
+						if ticket.parentTicketId == "" {
+							index = 999
+						}
+						category = LogCategory{index, ticket.category, ticket.parentTicketId, entries}
+					}
+					logEntry := LogEntry{ticket.title, ticketId}
+					category.entries = append(category.entries, logEntry)
+					catMap[ticket.parentTicketId] = category
+				}
+			}
+		}
+		catValues := slices.Collect(maps.Values(catMap))
+		sort.Slice(catValues, func(a, b int) bool {
+			return catValues[a].index < catValues[b].index
+		})
+		typeMap[entry.name] = TypeSection{j, entry.name, catValues}
+	}
+
+	typeValues := slices.Collect(maps.Values(typeMap))
+	sort.Slice(typeValues, func(a, b int) bool {
+		return typeValues[a].index < typeValues[b].index
+	})
+	return ChangeLog{typeValues}
+}
 
 func main() {
 	commitStrList := getCommitStringList()
@@ -29,7 +94,7 @@ func main() {
 	}
 
 	slackResult := getMarkdownResult(entries)
-	htmlResult := getHtmlResult(entries)
+	htmlResult := getNewHtmlResult(getJiraChangeLog(entries))
 
 	if isDebugBasic() || isDebugSlack() || isDebugHtml() {
 		fmt.Printf("\n    -------- Debug output(s) --------\n\n")

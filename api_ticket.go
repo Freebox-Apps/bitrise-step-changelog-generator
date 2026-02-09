@@ -22,6 +22,12 @@ type Response struct {
 	} `json:"data"`
 }
 
+type TicketInfo struct {
+	title string
+	category string
+	parentTicketId string
+}
+
 const (
 	WrikeTokenEnv  = "wrike_token"
 	JiraDomainEnv  = "jira_domain"
@@ -52,10 +58,19 @@ func getTitleForTicket(id string) string {
 	if getWrikeAccessToken() != "" {
 		return getTitleForWrikeTicket(id)
 	} else if getJiraAccessToken() != "" && getJiraUser() != "" && getJiraDomain() != "" {
-		return getTitleForJiraTicket(id)
+		return getTitleForJiraTicket(id).title
 	} else {
 		fmt.Printf("Missing ticket manager info %s", id)
 		return ""
+	}
+}
+
+func getTicketInfo(id string) TicketInfo {
+	if getJiraAccessToken() != "" && getJiraUser() != "" && getJiraDomain() != "" {
+		return getTitleForJiraTicket(id)
+	} else {
+		fmt.Printf("Missing ticket manager info %s", id)
+		return TicketInfo{}
 	}
 }
 
@@ -107,7 +122,7 @@ func getTitleForWrikeTicket(issueKey string) string {
 	}
 }
 
-func getTitleForJiraTicket(issueKey string) string {
+func getTitleForJiraTicket(issueKey string) TicketInfo {
 	url := fmt.Sprintf("https://%s/rest/api/3/issue/%s", getJiraDomain(), issueKey)
 
 	// Create HTTP Request
@@ -131,23 +146,41 @@ func getTitleForJiraTicket(issueKey string) string {
 	}
 	defer resp.Body.Close()
 
+	ticket := TicketInfo{}
+
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
 		fmt.Printf("Error ticket %s: %s\n", issueKey, string(body))
-		return ""
+		return ticket
 	}
 
 	// Read and pars la réponse JSON
 	var result struct {
 		Fields struct {
 			Summary string `json:"summary"`
+			Parent struct {
+				Fields struct {
+					Summary string `json:"summary"`
+				} `json:"fields"`
+				Key string `json:"key"`
+			} `json:parent`
 		} `json:"fields"`
 	}
 
 	err = json.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
 		fmt.Printf("Error JSON parsing ticket %s: %s\n", issueKey, err)
-		return ""
+		return ticket
 	}
-	return result.Fields.Summary
+
+	ticket.title = result.Fields.Summary
+	ticket.category = result.Fields.Parent.Fields.Summary
+
+	if ticket.category == "" {
+		ticket.category = "Unknown"
+	}
+
+	ticket.parentTicketId = result.Fields.Parent.Key
+
+	return ticket
 }
